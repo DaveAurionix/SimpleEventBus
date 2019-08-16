@@ -1,9 +1,10 @@
-﻿using GherkinSpec.TestModel;
+using GherkinSpec.TestModel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleEventBus.Testing;
 using SimpleEventBus.Testing.StepDefinitions;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SimpleEventBus.AzureServiceBusTransport.IntegrationTests.Configuration
@@ -19,7 +20,8 @@ namespace SimpleEventBus.AzureServiceBusTransport.IntegrationTests.Configuration
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var configurationBuilder = new ConfigurationBuilder()
                 .AddJsonFile(@"Configuration/appsettings.json", optional: false)
-                .AddJsonFile($@"Configuration/appsettings.{environmentName}.json", optional: true);
+                .AddJsonFile($@"Configuration/appsettings.{environmentName}.json", optional: true)
+                .AddEnvironmentVariables();
             var settings = configurationBuilder.Build().Get<Settings>();
 
             var services = new ServiceCollection();

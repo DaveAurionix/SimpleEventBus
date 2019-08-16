@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using SimpleEventBus.Abstractions.Incoming;
 using SimpleEventBus.Incoming;
 using System;
@@ -37,7 +37,8 @@ namespace SimpleEventBus
                 logger.LogCritical(
                     $"Endpoint was disposed before sources and sinks were flushed and connections closed.  Call {nameof(ShutDown)}() before calling {nameof(Dispose)}() and ensure the task is awaited. Alternatively use {nameof(StartWaitThenShutDown)}() and ensure the task is awaited.  Risk of deadlock if Dispose() is relied on to stop the listener.");
 
-                ShutDown().Wait();
+                ShutDown().Wait(
+                    TimeSpan.FromSeconds(70));
             }
 
             cancellationTokenSource.Dispose();
