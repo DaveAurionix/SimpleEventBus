@@ -1,0 +1,62 @@
+variables:
+  major: 0
+  minor: 1
+  patch: $[counter(format('major {0} minor {1}', variables['major'], variables['minor']), 3)]
+
+name: $[format('{0}.{1}.{2}', variables['major'], variables['minor'], variables['patch'])]
+
+resources:
+  - repo: self
+
+trigger:
+  - master
+
+jobs:
+  - job: Build
+    pool:
+      name: Private Linux
+
+    steps:    
+
+      - task: NuGetToolInstaller@0
+        displayName: 'Use NuGet tooling'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Build solution'
+        inputs:    
+          command: build
+          projects: '**/*.csproj'
+          arguments: '--configuration Release /p:Version=$(Build.BuildNumber)'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Run tests'
+        inputs:
+          command: test
+          projects: |
+            **/*.UnitTests.csproj
+            **/*.IntegrationTests.csproj
+          arguments: '--configuration Release --no-build'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Package'
+        inputs:
+          command: pack
+          packagesToPack: |
+            **/SimpleEventBus.csproj
+            **/SimpleEventBus.Abstractions.csproj
+            **/SimpleEventBus.AzureServiceBusTransport.csproj
+            **/SimpleEventBus.FileTransport.csproj
+            **/SimpleEventBus.InMemoryTransport.csproj
+            **/SimpleEventBus.Testing.csproj
+          configuration: Release
+          nobuild: true
+          versioningScheme: byBuildNumber
+
+      - task: NuGetCommand@2
+        displayName: 'Push packages to Nuget'
+        inputs:
+          command: push
+          nuGetFeedType: external
+          publishFeedCredentials: 'GivePenny Nuget'
+          packagesToPush: '**/SimpleEventBus.*.nupkg;!**/*.symbols.nupkg'
+          versioningScheme: byBuildNumber

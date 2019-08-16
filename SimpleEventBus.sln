@@ -1,0 +1,105 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventBus", "SimpleEventBus\SimpleEventBus.csproj", "{688D5A38-4289-4C25-8F5C-4310E27C2B34}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventBus.UnitTests", "SimpleEventBus.UnitTests\SimpleEventBus.UnitTests.csproj", "{4CBACCAA-26F4-4A3F-8C2F-13CB20399C03}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventBus.InMemoryTransport", "SimpleEventBus.InMemoryTransport\SimpleEventBus.InMemoryTransport.csproj", "{62759407-66B4-483E-BDBE-72AF77A43EE1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventBus.AzureServiceBusTransport", "SimpleEventBus.AzureServiceBusTransport\SimpleEventBus.AzureServiceBusTransport.csproj", "{D6FDB018-9A4B-46B9-B2B1-7EACC309B197}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3AE3B2FD-63C4-4944-A747-EB16E4FF9C89}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		azure-pipelines.yml = azure-pipelines.yml
+		License.md = License.md
+		Readme.md = Readme.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventBus.InMemoryTransport.IntegrationTests", "SimpleEventBus.InMemoryTransport.IntegrationTests\SimpleEventBus.InMemoryTransport.IntegrationTests.csproj", "{FE737186-2679-4271-B42C-09606C74FE5A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventBus.Abstractions", "SimpleEventBus.Abstractions\SimpleEventBus.Abstractions.csproj", "{3FC7A184-7927-489C-8842-1DC35CAB752A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventBus.InMemoryTransport.UnitTests", "SimpleEventBus.InMemoryTransport.UnitTests\SimpleEventBus.InMemoryTransport.UnitTests.csproj", "{AC9734DF-0ED7-4A5B-A00E-96CF5C3A643F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventBus.FileTransport", "SimpleEventBus.FileTransport\SimpleEventBus.FileTransport.csproj", "{FD18809B-D3BF-42FE-B0A6-6C3882300E8D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventBus.FileTransport.UnitTests", "SimpleEventBus.FileTransport.UnitTests\SimpleEventBus.FileTransport.UnitTests.csproj", "{3ECC3DB9-E70D-4923-A591-3EEBD97A9697}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventBus.FileTransport.IntegrationTests", "SimpleEventBus.FileTransport.IntegrationTests\SimpleEventBus.FileTransport.IntegrationTests.csproj", "{D1784579-FE88-4F99-B10B-169427F69868}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventBus.Testing", "SimpleEventBus.Testing\SimpleEventBus.Testing.csproj", "{E0F93326-62D2-42C3-811F-9DC9351645F7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventBus.AzureServiceBusTransport.IntegrationTests", "SimpleEventBus.AzureServiceBusTransport.IntegrationTests\SimpleEventBus.AzureServiceBusTransport.IntegrationTests.csproj", "{F3B9116C-4579-48AE-A1C4-F41EB8965945}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventBus.AzureServiceBusTransport.UnitTests", "SimpleEventBus.AzureServiceBusTransport.UnitTests\SimpleEventBus.AzureServiceBusTransport.UnitTests.csproj", "{1F983FBA-53D6-435F-9AC9-FB34ED8600C5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{688D5A38-4289-4C25-8F5C-4310E27C2B34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{688D5A38-4289-4C25-8F5C-4310E27C2B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{688D5A38-4289-4C25-8F5C-4310E27C2B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{688D5A38-4289-4C25-8F5C-4310E27C2B34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CBACCAA-26F4-4A3F-8C2F-13CB20399C03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CBACCAA-26F4-4A3F-8C2F-13CB20399C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CBACCAA-26F4-4A3F-8C2F-13CB20399C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CBACCAA-26F4-4A3F-8C2F-13CB20399C03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62759407-66B4-483E-BDBE-72AF77A43EE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62759407-66B4-483E-BDBE-72AF77A43EE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62759407-66B4-483E-BDBE-72AF77A43EE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62759407-66B4-483E-BDBE-72AF77A43EE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6FDB018-9A4B-46B9-B2B1-7EACC309B197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6FDB018-9A4B-46B9-B2B1-7EACC309B197}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6FDB018-9A4B-46B9-B2B1-7EACC309B197}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6FDB018-9A4B-46B9-B2B1-7EACC309B197}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE737186-2679-4271-B42C-09606C74FE5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE737186-2679-4271-B42C-09606C74FE5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE737186-2679-4271-B42C-09606C74FE5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE737186-2679-4271-B42C-09606C74FE5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FC7A184-7927-489C-8842-1DC35CAB752A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FC7A184-7927-489C-8842-1DC35CAB752A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FC7A184-7927-489C-8842-1DC35CAB752A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FC7A184-7927-489C-8842-1DC35CAB752A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC9734DF-0ED7-4A5B-A00E-96CF5C3A643F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC9734DF-0ED7-4A5B-A00E-96CF5C3A643F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC9734DF-0ED7-4A5B-A00E-96CF5C3A643F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC9734DF-0ED7-4A5B-A00E-96CF5C3A643F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD18809B-D3BF-42FE-B0A6-6C3882300E8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD18809B-D3BF-42FE-B0A6-6C3882300E8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD18809B-D3BF-42FE-B0A6-6C3882300E8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD18809B-D3BF-42FE-B0A6-6C3882300E8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3ECC3DB9-E70D-4923-A591-3EEBD97A9697}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3ECC3DB9-E70D-4923-A591-3EEBD97A9697}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3ECC3DB9-E70D-4923-A591-3EEBD97A9697}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3ECC3DB9-E70D-4923-A591-3EEBD97A9697}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1784579-FE88-4F99-B10B-169427F69868}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1784579-FE88-4F99-B10B-169427F69868}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1784579-FE88-4F99-B10B-169427F69868}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1784579-FE88-4F99-B10B-169427F69868}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0F93326-62D2-42C3-811F-9DC9351645F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0F93326-62D2-42C3-811F-9DC9351645F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0F93326-62D2-42C3-811F-9DC9351645F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0F93326-62D2-42C3-811F-9DC9351645F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3B9116C-4579-48AE-A1C4-F41EB8965945}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3B9116C-4579-48AE-A1C4-F41EB8965945}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3B9116C-4579-48AE-A1C4-F41EB8965945}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3B9116C-4579-48AE-A1C4-F41EB8965945}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F983FBA-53D6-435F-9AC9-FB34ED8600C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F983FBA-53D6-435F-9AC9-FB34ED8600C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F983FBA-53D6-435F-9AC9-FB34ED8600C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F983FBA-53D6-435F-9AC9-FB34ED8600C5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F1CD836B-6232-4333-B030-3E8822B3BD9B}
+	EndGlobalSection
+EndGlobal
