@@ -32,7 +32,7 @@ jobs:
         displayName: 'Run unit tests'
         inputs:
           command: test
-          projects: **/*.UnitTests.csproj
+          projects: '**/*.UnitTests.csproj'
           configuration: Release
           nobuild: true
 
@@ -40,11 +40,11 @@ jobs:
         displayName: 'Run integration tests'
         inputs:
           command: test
-          projects: **/*.IntegrationTests.csproj
+          projects: '**/*.IntegrationTests.csproj'
           configuration: Release
           nobuild: true
         env:
-          AzureServiceBusTransport__ConnectionStrings__0: $(AzureServiceBusTransport__ConnectionStrings__0)
+          AzureServiceBusTransport__ConnectionStrings__0: "$(AzureServiceBusTransport__ConnectionStrings__0)"
 
       - task: DotNetCoreCLI@2
         displayName: 'Package'
