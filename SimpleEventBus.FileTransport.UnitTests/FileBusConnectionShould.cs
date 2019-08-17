@@ -4,6 +4,7 @@ using SimpleEventBus.Abstractions.Outgoing;
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,10 +21,13 @@ namespace SimpleEventBus.FileTransport.UnitTests
         [TestInitialize]
         public void Setup()
         {
+            var busPath = Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                "messages");
             message = new OutgoingMessage(Guid.NewGuid().ToString(), "Hello world", new[] { MessageType });
             message2 = new OutgoingMessage(Guid.NewGuid().ToString(), "Hello world 2", new[] { MessageType });
             bus = new FileBusConnection(
-                Path.Combine(Directory.GetCurrentDirectory(), "messages"),
+                busPath,
                 new FullNameTypeMap());
         }
 
