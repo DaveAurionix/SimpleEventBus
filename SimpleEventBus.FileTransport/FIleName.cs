@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -83,7 +83,7 @@ namespace SimpleEventBus.FileTransport
 
         private static string GetTimestampString(DateTime utcValue)
             => utcValue.ToString(
-                "yyyyMMddHHmmssfff",
+                "yyyyMMddHHmmssfffffff",
                 CultureInfo.InvariantCulture);
     }
 }
