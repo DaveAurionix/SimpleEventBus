@@ -1,3 +1,4 @@
+using GherkinSpec.Logging;
 using GherkinSpec.TestModel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +34,9 @@ namespace SimpleEventBus.AzureServiceBusTransport.IntegrationTests.Configuration
                 .AddSingleton(settings)
                 .AddAllStepsClassesAsScoped()
                 .AddAllStepsClassesAsScoped(typeof(TestData).Assembly)
+                .AddSingleton(testRunContext.Logger)
+                .AddLogging(
+                    builder => builder.AddTestLogging(testRunContext.Logger))
                 .AddSimpleEventBus(
                     options => options
                         .UseEndpointName("SimpleEventBus.AzureServiceBusTransport.Tests")
@@ -54,11 +58,15 @@ namespace SimpleEventBus.AzureServiceBusTransport.IntegrationTests.Configuration
         [AfterRun]
         public static async Task Teardown(TestRunContext testRunContext)
         {
+            testRunContext.Logger.LogStepInformation("Tearing down test framework.");
+
             if (endpoint != null)
             {
+                testRunContext.Logger.LogStepInformation("Shutting down endpoint.");
                 await endpoint
                     .ShutDown()
                     .ConfigureAwait(false);
+                testRunContext.Logger.LogStepInformation("Endpoint shut down");
             }
 
             var typedProvider = (ServiceProvider)testRunContext.ServiceProvider;

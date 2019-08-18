@@ -1,20 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <PackageId>GivePenny.SimpleEventBus.Testing</PackageId>
+        <Authors>GivePenny</Authors>
+        <Company>GivePenny</Company>
+        <Product>SimpleEventBus</Product>
+        <Copyright>Copyright 2019 Raising Technology Ltd</Copyright>
+        <Description>Library of shared integration test steps for adapters for GivePenny SimpleEventBus.  SimpleEventBus is an opinionated .NET Standard library to glue Azure Service Bus to message handler classes, with a slant towards event-orientated messaging.</Description>
+        <PackageLicenseUrl>https://raw.githubusercontent.com/GivePenny/SimpleEventBus/master/Licence.md</PackageLicenseUrl>
+        <PackageProjectUrl>https://github.com/GivePenny/SimpleEventBus</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/GivePenny/SimpleEventBus</RepositoryUrl>
+        <RepositoryType>GitHub</RepositoryType>
+        <PackageIconUrl>https://secure.gravatar.com/avatar/96b7defc765a3a242e00557bb65d37ef?s=256</PackageIconUrl>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="GivePenny.GherkinSpec.TestAdapter" Version="1.1.7" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="GivePenny.GherkinSpec.TestAdapter" Version="1.1.7" />
+        <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SimpleEventBus\SimpleEventBus.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SimpleEventBus\SimpleEventBus.csproj" />
+    </ItemGroup>
 
 </Project>
