@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.ServiceBus;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -198,7 +198,7 @@ namespace SimpleEventBus.AzureServiceBusTransport.UnitTests
             await source.WaitForNextMessageBatch(32, CancellationToken.None).ConfigureAwait(false);
 
             Assert.IsTrue(DateTime.UtcNow >= startUtc + settings.BackoffDelayIfAllConnectionsFaulty);
-            Assert.IsTrue(DateTime.UtcNow <= startUtc + settings.BackoffDelayIfAllConnectionsFaulty + TimeSpan.FromSeconds(1));
+            Assert.IsTrue(DateTime.UtcNow <= startUtc + settings.BackoffDelayIfAllConnectionsFaulty + TimeSpan.FromSeconds(2));
         }
 
         [TestMethod]
