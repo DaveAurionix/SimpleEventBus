@@ -58,15 +58,11 @@ namespace SimpleEventBus.AzureServiceBusTransport.IntegrationTests.Configuration
         [AfterRun]
         public static async Task Teardown(TestRunContext testRunContext)
         {
-            testRunContext.Logger.LogStepInformation("Tearing down test framework.");
-
             if (endpoint != null)
             {
-                testRunContext.Logger.LogStepInformation("Shutting down endpoint.");
                 await endpoint
                     .ShutDown()
                     .ConfigureAwait(false);
-                testRunContext.Logger.LogStepInformation("Endpoint shut down");
             }
 
             var typedProvider = (ServiceProvider)testRunContext.ServiceProvider;
