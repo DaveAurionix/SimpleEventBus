@@ -49,25 +49,41 @@ namespace SimpleEventBus
             await Initialise(initialisationCancellationToken)
                 .ConfigureAwait(false);
 
-            listeningTask = Task.Run(() => Listen(cancellationTokenSource.Token));
+            listeningTask = Listen(cancellationTokenSource.Token);
         }
 
         public async Task ShutDown()
         {
+            logger.LogInformation("Messaging endpoint is shutting down");
+
             cancellationTokenSource.Cancel();
 
             var capturedTask = listeningTask;
             if (capturedTask != null)
             {
-                await capturedTask
+                // Give the message pipeline 15 seconds to shut down gracefully
+                await Task
+                    .WhenAny(
+                        capturedTask,
+                        Task.Delay(TimeSpan.FromSeconds(15)))
                     .ConfigureAwait(false);
-                listeningTask = null;
             }
 
+            // Tell transports to shut down
             await messageSource
                 .Close()
                 .ConfigureAwait(false);
 
+            if (capturedTask != null)
+            {
+                // Wait for message pipeline to fail and finish brutally (as transports have now been shut down)
+                await capturedTask
+                    .ConfigureAwait(false);
+            }
+
+            listeningTask = null;
+
+            logger.LogInformation("Messaging endpoint has shut down");
             isShutdown = true;
         }
 
@@ -103,25 +119,19 @@ namespace SimpleEventBus
         {
             logger.LogInformation("Messaging endpoint is listening for messages.");
 
-            var listeningProcesses = new List<Task>();
-            for (var listeningProcessIndex = 0;
-                listeningProcessIndex < (useConcurrentFetching ? 2 : 1);
-                listeningProcessIndex++)
+            if (useConcurrentFetching)
             {
-                if (listeningProcessIndex > 0)
-                {
-                    await Task
-                        .Delay(TimeSpan.FromSeconds(5))
-                        .ConfigureAwait(false);
-                }
-
-                listeningProcesses.Add(
-                    Task.Run(() => FetchAndProcess(cancellationToken)));
+                await Task
+                    .WhenAll(
+                        FetchAndProcess(cancellationToken),
+                        FetchAndProcess(cancellationToken))
+                    .ConfigureAwait(false);
             }
-
-            await Task
-                .WhenAll(listeningProcesses)
-                .ConfigureAwait(false);
+            else
+            {
+                await FetchAndProcess(cancellationToken)
+                    .ConfigureAwait(false);
+            }
 
             logger.LogInformation("Messaging endpoint has stopped listening for messages.");
         }

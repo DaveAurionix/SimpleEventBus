@@ -2,6 +2,7 @@ using GherkinSpec.Logging;
 using GherkinSpec.TestModel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SimpleEventBus.Testing;
 using SimpleEventBus.Testing.StepDefinitions;
 using System;
@@ -18,10 +19,9 @@ namespace SimpleEventBus.AzureServiceBusTransport.IntegrationTests.Configuration
         [BeforeRun]
         public static async Task Setup(TestRunContext testRunContext)
         {
-            var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var configurationBuilder = new ConfigurationBuilder()
                 .AddJsonFile(@"Configuration/appsettings.json", optional: false)
-                .AddJsonFile($@"Configuration/appsettings.{environmentName}.json", optional: true)
+                .AddJsonFile($@"Configuration/appsettings.Development.json", optional: true)
                 .AddEnvironmentVariables();
             var settings = configurationBuilder.Build().Get<Settings>();
 
@@ -36,7 +36,9 @@ namespace SimpleEventBus.AzureServiceBusTransport.IntegrationTests.Configuration
                 .AddAllStepsClassesAsScoped(typeof(TestData).Assembly)
                 .AddSingleton(testRunContext.Logger)
                 .AddLogging(
-                    builder => builder.AddTestLogging(testRunContext.Logger))
+                    builder => builder
+                        .AddConsole()
+                        .AddTestLogging(testRunContext.Logger))
                 .AddSimpleEventBus(
                     options => options
                         .UseEndpointName("SimpleEventBus.AzureServiceBusTransport.Tests")

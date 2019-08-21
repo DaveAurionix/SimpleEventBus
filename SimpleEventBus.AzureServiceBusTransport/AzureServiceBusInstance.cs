@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.ServiceBus;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 using Microsoft.Extensions.Logging;
 using SimpleEventBus.AzureServiceBusTransport.Failover;
@@ -56,6 +56,11 @@ namespace SimpleEventBus.AzureServiceBusTransport
                     var results = await messageReceiver
                         .ReceiveAsync(maximumMessagesToReturn, operationTimeout)
                         .ConfigureAwait(false);
+
+                    if (results == null)
+                    {
+                        results = emptyList;
+                    }
 
                     detectFailureFast = false;
 

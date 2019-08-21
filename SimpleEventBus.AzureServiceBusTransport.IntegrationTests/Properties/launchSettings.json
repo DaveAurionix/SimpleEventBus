@@ -3,7 +3,6 @@
     "SimpleEventBus.AzureServiceBusTransport.IntegrationTests": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
