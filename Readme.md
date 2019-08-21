@@ -31,9 +31,6 @@ Copy the actual connection string from Azure Portal for your Azure Service Bus i
 
 ### MVP (v0.1)
 
-* Pipeline to publish Nuget package
-  * Inject test service bus connection string
-
 * Example repos
 
 * Search code for TODO comments
@@ -71,7 +68,6 @@ Copy the actual connection string from Azure Portal for your Azure Service Bus i
 
 ### vNext
 
-* KeyVault property encryption (separate repo)
 * Rate limiter?
   * Options has UseRateLimit(maximumMessages:500, enforcedInPeriod:TimeSpan.FromSeconds(1))
   * Behaviour enforces rate limit

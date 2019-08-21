@@ -1,8 +1,7 @@
-﻿using SimpleEventBus.Abstractions.Incoming;
+using SimpleEventBus.Abstractions.Incoming;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -15,13 +14,13 @@ namespace SimpleEventBus.FileTransport
         private readonly string hiddenPath;
         private readonly string deadLetterPath;
 
-        public FileOperations(string busPath)
+        public FileOperations(string busPath, string endpointName)
         {
             this.busPath = busPath;
 
             thisSubscriberPath = Path.Combine(
                 busPath,
-                Guid.NewGuid().ToString("n", CultureInfo.InvariantCulture));
+                endpointName);
 
             hiddenPath = Path.Combine(
                 thisSubscriberPath,

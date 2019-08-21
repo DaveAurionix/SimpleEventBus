@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.ServiceBus;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SimpleEventBus.Abstractions;
@@ -61,6 +61,13 @@ namespace SimpleEventBus.AzureServiceBusTransport
         public async Task EnsureSubscribed(
             SimpleSubscriptionDescription subscription, CancellationToken cancellationToken)
         {
+            if (subscription.EndpointName != thisEndpointName)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(subscription),
+                    "Endpoint name in subscription description does not match endpoint name of bus connection.");
+            }
+
             var exceptions = new List<ServiceBusException>();
             var connectionStringNumber = 0;
 

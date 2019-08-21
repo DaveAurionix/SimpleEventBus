@@ -49,7 +49,7 @@ namespace SimpleEventBus
             await Initialise(initialisationCancellationToken)
                 .ConfigureAwait(false);
 
-            listeningTask = Listen(cancellationTokenSource.Token);
+            listeningTask = Task.Run(() => Listen(cancellationTokenSource.Token));
         }
 
         public async Task ShutDown()
@@ -119,27 +119,31 @@ namespace SimpleEventBus
         {
             logger.LogInformation("Messaging endpoint is listening for messages.");
 
+            var task = FetchAndProcess(cancellationToken, startupDelay: TimeSpan.Zero);
+
             if (useConcurrentFetching)
             {
-                await Task
-                    .WhenAll(
-                        FetchAndProcess(cancellationToken),
-                        FetchAndProcess(cancellationToken))
-                    .ConfigureAwait(false);
+                task = Task.WhenAll(
+                    task,
+                    FetchAndProcess(
+                        cancellationToken,
+                        startupDelay: TimeSpan.FromSeconds(5)));
             }
-            else
-            {
-                await FetchAndProcess(cancellationToken)
-                    .ConfigureAwait(false);
-            }
+
+            await task.ConfigureAwait(false);
 
             logger.LogInformation("Messaging endpoint has stopped listening for messages.");
         }
 
         [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Vast majority of exceptions will be application exceptions but these are thrown by third-party user code, we cannot identify all the types involved.")]
-        private async Task FetchAndProcess(CancellationToken cancellationToken)
+        private async Task FetchAndProcess(CancellationToken cancellationToken, TimeSpan startupDelay)
         {
             var numberRetrievedInLastBatch = 0;
+
+            if (startupDelay > TimeSpan.Zero)
+            {
+                await Task.Delay(startupDelay).ConfigureAwait(false);
+            }
 
             while (!cancellationToken.IsCancellationRequested)
             {

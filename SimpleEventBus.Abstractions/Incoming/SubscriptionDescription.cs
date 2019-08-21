@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SimpleEventBus.Abstractions.Incoming
@@ -12,6 +12,7 @@ namespace SimpleEventBus.Abstractions.Incoming
         }
 
         public IReadOnlyCollection<string> MessageTypeNames { get; }
+
         public string EndpointName { get; }
 
         public override int GetHashCode()

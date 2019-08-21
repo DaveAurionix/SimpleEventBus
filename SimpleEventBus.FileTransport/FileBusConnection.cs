@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SimpleEventBus.Abstractions;
 using SimpleEventBus.Abstractions.Incoming;
@@ -15,13 +15,15 @@ namespace SimpleEventBus.FileTransport
     public sealed class FileBusConnection : IMessageSink, IMessageSource, IDisposable
     {
         private SubscriptionDescription subscription;
+        private readonly string endpointName;
         private readonly ITypeMap typeMap;
         private readonly FileOperations fileOperations;
 
-        public FileBusConnection(string busPath, ITypeMap typeMap)
+        public FileBusConnection(string busPath, string endpointName, ITypeMap typeMap)
         {
+            this.endpointName = endpointName;
             this.typeMap = typeMap;
-            fileOperations = new FileOperations(busPath);
+            fileOperations = new FileOperations(busPath, endpointName);
         }
 
         public void Dispose()
@@ -61,6 +63,13 @@ namespace SimpleEventBus.FileTransport
             if (this.subscription != null)
             {
                 throw new InvalidOperationException("Subscription already registered.");
+            }
+
+            if (subscription.EndpointName != endpointName)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(subscription),
+                    "Endpoint name in subscription description does not match endpoint name of bus connection.");
             }
 
             this.subscription = subscription;

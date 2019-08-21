@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleEventBus.Abstractions;
 using SimpleEventBus.Abstractions.Incoming;
 using SimpleEventBus.Abstractions.Outgoing;
@@ -13,7 +13,9 @@ namespace SimpleEventBus
             options
                 .Services
                 .AddTransient(
-                    sp => new FileBusConnection(directoryPath,
+                    sp => new FileBusConnection(
+                        directoryPath,
+                        options.EndpointName,
                         sp.GetRequiredService<ITypeMap>()))
                 .AddSingleton<IMessageSink>(
                     sp => sp.GetRequiredService<FileBusConnection>())

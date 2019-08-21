@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleEventBus.Abstractions.Incoming;
 using SimpleEventBus.Abstractions.Outgoing;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -17,17 +18,20 @@ namespace SimpleEventBus.FileTransport.UnitTests
         private OutgoingMessage message;
         private OutgoingMessage message2;
         private FileBusConnection bus;
-        
+        private readonly string endpointName = Guid.NewGuid().ToString("n", CultureInfo.InvariantCulture);
+
         [TestInitialize]
         public void Setup()
         {
             var busPath = Path.Combine(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                 "messages");
+
             message = new OutgoingMessage(Guid.NewGuid().ToString(), "Hello world", new[] { MessageType });
             message2 = new OutgoingMessage(Guid.NewGuid().ToString(), "Hello world 2", new[] { MessageType });
             bus = new FileBusConnection(
                 busPath,
+                endpointName,
                 new FullNameTypeMap());
         }
 
@@ -41,7 +45,7 @@ namespace SimpleEventBus.FileTransport.UnitTests
         public async Task ReceiveMessagesWhenSubscribed()
         {
             await bus
-                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
+                .EnsureSubscribed(new SubscriptionDescription(endpointName, new[] { MessageType }), CancellationToken.None)
                 .ConfigureAwait(false);
 
             await bus
@@ -60,7 +64,7 @@ namespace SimpleEventBus.FileTransport.UnitTests
         public async Task NotReceiveMessagesWhenNotSubscribed()
         {
             await bus
-                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { "Another.Type" }), CancellationToken.None)
+                .EnsureSubscribed(new SubscriptionDescription(endpointName, new[] { "Another.Type" }), CancellationToken.None)
                 .ConfigureAwait(false);
 
             await bus
@@ -81,7 +85,7 @@ namespace SimpleEventBus.FileTransport.UnitTests
         public async Task NotReceiveMessagesWhenSubscribedButTargetEndpointNameIsNotMe()
         {
             await bus
-                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
+                .EnsureSubscribed(new SubscriptionDescription(endpointName, new[] { MessageType }), CancellationToken.None)
                 .ConfigureAwait(false);
 
             await bus
@@ -109,14 +113,14 @@ namespace SimpleEventBus.FileTransport.UnitTests
         public async Task ReceiveMessagesWhenNotSubscribedButTargetEndpointNameIsMe()
         {
             await bus
-                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { "Another.Type" }), CancellationToken.None)
+                .EnsureSubscribed(new SubscriptionDescription(endpointName, new[] { "Another.Type" }), CancellationToken.None)
                 .ConfigureAwait(false);
 
             var message = new OutgoingMessage(
                 id: Guid.NewGuid().ToString(),
                 body: "hello",
                 messageTypeNames: new[] { MessageType },
-                specificReceivingEndpointName: "TestEndpoint");
+                specificReceivingEndpointName: endpointName);
 
             await bus
                 .Sink(new[] { message })
@@ -136,7 +140,7 @@ namespace SimpleEventBus.FileTransport.UnitTests
             bus.LockTime = TimeSpan.FromSeconds(1);
 
             await bus
-                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
+                .EnsureSubscribed(new SubscriptionDescription(endpointName, new[] { MessageType }), CancellationToken.None)
                 .ConfigureAwait(false);
 
             await bus
@@ -162,7 +166,7 @@ namespace SimpleEventBus.FileTransport.UnitTests
             bus.LockTime = TimeSpan.FromSeconds(1);
 
             await bus
-                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
+                .EnsureSubscribed(new SubscriptionDescription(endpointName, new[] { MessageType }), CancellationToken.None)
                 .ConfigureAwait(false);
 
             await bus
@@ -192,7 +196,7 @@ namespace SimpleEventBus.FileTransport.UnitTests
             bus.LockTime = TimeSpan.FromSeconds(10);
 
             await bus
-                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
+                .EnsureSubscribed(new SubscriptionDescription(endpointName, new[] { MessageType }), CancellationToken.None)
                 .ConfigureAwait(false);
 
             await bus

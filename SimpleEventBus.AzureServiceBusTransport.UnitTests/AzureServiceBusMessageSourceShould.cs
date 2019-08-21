@@ -15,6 +15,8 @@ namespace SimpleEventBus.AzureServiceBusTransport.UnitTests
     [TestClass]
     public class AzureServiceBusMessageSourceShould
     {
+        const string EndpointName = "My.Endpoint";
+
         readonly Mock<IAzureServiceBusInstance> busInstance1 = new Mock<IAzureServiceBusInstance>();
         readonly Mock<IAzureServiceBusInstance> busInstance2 = new Mock<IAzureServiceBusInstance>();
 
@@ -51,7 +53,7 @@ namespace SimpleEventBus.AzureServiceBusTransport.UnitTests
                 },
                 new FullNameTypeMap(),
                 NullLogger<AzureServiceBusMessageSource>.Instance,
-                endpointName: "My.Endpoint");
+                EndpointName);
 
             azureMessage = new Message
             {
@@ -106,7 +108,7 @@ namespace SimpleEventBus.AzureServiceBusTransport.UnitTests
         [TestMethod]
         public async Task DelegateSubscriptionInitialisationForEachConnectionString()
         {
-            var description = new SubscriptionDescription("Endpoint name", Enumerable.Empty<string>());
+            var description = new SubscriptionDescription(EndpointName, Enumerable.Empty<string>());
             await source.EnsureSubscribed(description, CancellationToken.None).ConfigureAwait(false);
 
             mockSubscriptionInitialiser.VerifyEnsureInitialisedCalledOnce(description, "connection 1");
@@ -118,7 +120,7 @@ namespace SimpleEventBus.AzureServiceBusTransport.UnitTests
         {
             mockSubscriptionInitialiser.SetupEnsureInitialisedThrowsTransientException("connection 1");
 
-            var description = new SubscriptionDescription("Endpoint name", Enumerable.Empty<string>());
+            var description = new SubscriptionDescription(EndpointName, Enumerable.Empty<string>());
             await source.EnsureSubscribed(description, CancellationToken.None).ConfigureAwait(false);
 
             mockSubscriptionInitialiser.VerifyEnsureInitialisedCalledOnce(description, "connection 1");
@@ -130,7 +132,7 @@ namespace SimpleEventBus.AzureServiceBusTransport.UnitTests
         {
             mockSubscriptionInitialiser.SetupEnsureInitialisedThrowsNonTransientException("connection 1");
 
-            var description = new SubscriptionDescription("Endpoint name", Enumerable.Empty<string>());
+            var description = new SubscriptionDescription(EndpointName, Enumerable.Empty<string>());
 
             var exception = await Assert
                 .ThrowsExceptionAsync<ServiceBusException>(
@@ -147,7 +149,7 @@ namespace SimpleEventBus.AzureServiceBusTransport.UnitTests
 
             mockSubscriptionInitialiser.SetupEnsureInitialisedThrowsTransientException("connection 2");
 
-            var description = new SubscriptionDescription("Endpoint name", Enumerable.Empty<string>());
+            var description = new SubscriptionDescription(EndpointName, Enumerable.Empty<string>());
 
             var exception = await Assert
                 .ThrowsExceptionAsync<AggregateException>(
@@ -198,7 +200,7 @@ namespace SimpleEventBus.AzureServiceBusTransport.UnitTests
             await source.WaitForNextMessageBatch(32, CancellationToken.None).ConfigureAwait(false);
 
             Assert.IsTrue(DateTime.UtcNow >= startUtc + settings.BackoffDelayIfAllConnectionsFaulty);
-            Assert.IsTrue(DateTime.UtcNow <= startUtc + settings.BackoffDelayIfAllConnectionsFaulty + TimeSpan.FromSeconds(2));
+            Assert.IsTrue(DateTime.UtcNow <= startUtc + settings.BackoffDelayIfAllConnectionsFaulty + TimeSpan.FromSeconds(4));
         }
 
         [TestMethod]
