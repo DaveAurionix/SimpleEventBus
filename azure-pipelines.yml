@@ -18,9 +18,6 @@ jobs:
 
     steps:    
 
-      - task: NuGetToolInstaller@0
-        displayName: 'Use NuGet tooling'
-
       - task: DotNetCoreCLI@2
         displayName: 'Build solution'
         inputs:    
@@ -50,18 +47,12 @@ jobs:
         displayName: 'Package'
         inputs:
           command: pack
-          searchPatternPack: |
-            **/SimpleEventBus.csproj
-            **/SimpleEventBus.Abstractions.csproj
-            **/SimpleEventBus.AzureServiceBusTransport.csproj
-            **/SimpleEventBus.FileTransport.csproj
-            **/SimpleEventBus.InMemoryTransport.csproj
-            **/SimpleEventBus.Testing.csproj
+          searchPatternPack: '**/*.csproj;-:**/*.IntegrationTests.csproj;-:**/*.UnitTests.csproj'
           configuration: Release
           nobuild: true
           versioningScheme: byBuildNumber
 
-      - task: NuGetCommand@2
+      - task: DotNetCoreCLI@2
         displayName: 'Push packages to Nuget'
         inputs:
           command: push
