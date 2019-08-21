@@ -1,5 +1,7 @@
-﻿using GherkinSpec.TestModel;
+using GherkinSpec.Logging;
+using GherkinSpec.TestModel;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SimpleEventBus.Testing;
 using SimpleEventBus.Testing.StepDefinitions;
 using System;
@@ -22,6 +24,10 @@ namespace SimpleEventBus.InMemoryTransport.IntegrationTests.Configuration
                 .AddScoped<TestData>()
                 .AddAllStepsClassesAsScoped()
                 .AddAllStepsClassesAsScoped(typeof(TestData).Assembly)
+                .AddLogging(
+                    builder => builder
+                        .AddConsole()
+                        .AddTestLogging(testRunContext.Logger))
                 .AddSimpleEventBus(
                     options => options
                         .UseEndpointName(typeof(Startup).Assembly.GetName().Name)

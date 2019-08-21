@@ -18,6 +18,9 @@ jobs:
 
     steps:    
 
+      - task: NuGetToolInstaller@0
+        displayName: 'Use NuGet tooling'
+
       - task: DotNetCoreCLI@2
         displayName: 'Build solution'
         inputs:    
@@ -51,8 +54,9 @@ jobs:
           configuration: Release
           nobuild: true
           versioningScheme: byBuildNumber
+          verbosityPack: normal
 
-      - task: DotNetCoreCLI@2
+      - task: NuGetCommand@2
         displayName: 'Push packages to Nuget'
         inputs:
           command: push

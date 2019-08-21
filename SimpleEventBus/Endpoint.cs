@@ -119,15 +119,15 @@ namespace SimpleEventBus
         {
             logger.LogInformation("Messaging endpoint is listening for messages.");
 
-            var task = FetchAndProcess(cancellationToken, startupDelay: TimeSpan.Zero);
+            var task = FetchAndProcess(startupDelay: TimeSpan.Zero, cancellationToken);
 
             if (useConcurrentFetching)
             {
                 task = Task.WhenAll(
                     task,
                     FetchAndProcess(
-                        cancellationToken,
-                        startupDelay: TimeSpan.FromSeconds(5)));
+                        startupDelay: TimeSpan.FromSeconds(5),
+                        cancellationToken));
             }
 
             await task.ConfigureAwait(false);
@@ -136,7 +136,7 @@ namespace SimpleEventBus
         }
 
         [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Vast majority of exceptions will be application exceptions but these are thrown by third-party user code, we cannot identify all the types involved.")]
-        private async Task FetchAndProcess(CancellationToken cancellationToken, TimeSpan startupDelay)
+        private async Task FetchAndProcess(TimeSpan startupDelay, CancellationToken cancellationToken)
         {
             var numberRetrievedInLastBatch = 0;
 
