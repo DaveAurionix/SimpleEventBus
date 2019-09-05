@@ -9,7 +9,7 @@
         <Product>SimpleEventBus</Product>
         <Copyright>Copyright 2019 Raising Technology Ltd</Copyright>
         <Description>In-memory bus adapter for GivePenny SimpleEventBus for in-process integration testing.  SimpleEventBus is an opinionated .NET Standard library to glue Azure Service Bus to message handler classes, with a slant towards event-orientated messaging.</Description>
-        <PackageLicenseUrl>https://raw.githubusercontent.com/GivePenny/SimpleEventBus/master/Licence.md</PackageLicenseUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/GivePenny/SimpleEventBus</PackageProjectUrl>
         <RepositoryUrl>https://github.com/GivePenny/SimpleEventBus</RepositoryUrl>
         <RepositoryType>GitHub</RepositoryType>
