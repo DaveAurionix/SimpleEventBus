@@ -16,13 +16,15 @@ TODO - Reference example repositories
 
 This project uses a Visual Studio 2019 solution.  After checking the project out and opening the solution, no special steps are needed to build it or to run the unit test projects.
 
-Integration test projects usually run with no extra configuration.  The only exception is the AzureServiceBusTransport.IntegrationTests project.  This currently needs a new appsettings.Development.json file created alongside appsettings.json with a connection string in pointing to an Azure Service Bus instance that you have created for development and testing purposes.  Example file contents:
+Integration test projects usually run with no extra configuration.  The only exception is the AzureServiceBusTransport.IntegrationTests project.  This currently needs a new appsettings.Development.json file created alongside appsettings.json with a connection string in pointing to an Azure Service Bus instance that you have created for development and testing purposes.  Example file contents (the MachineName allows multiple developers to share a Bus but on isolated Topics):
 
 ```json
 "AzureServiceBusTransport": {
     "ConnectionStrings": [
       "Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<keyname>;SharedAccessKey=<key>"
     ],
+    "TopicName": "{MachineName}-Test",
+    "EnablePartitioning": false
 ```
 
 Copy the actual connection string from Azure Portal for your Azure Service Bus instance.  **Do not check that connection string into source control**.
@@ -31,11 +33,9 @@ Copy the actual connection string from Azure Portal for your Azure Service Bus i
 
 ### MVP (v0.1)
 
-* Example repos
-
 * Search code for TODO comments
   * Unit tests for dequeue count in file and in-memory buses
-* Logging (separate extensions repo?)
+* Logging (separate extensions repo or core functionality to support testing diagnosis?)
 * Monitoring (separate extensions repo for AppInsights)
 * Circuit breaker (separate extensions repo?) - investigate Polly, e.g. https://docs.microsoft.com/en-us/dotnet/standard/microservices-architecture/implement-resilient-applications/implement-circuit-breaker-pattern
 * Performance tests
@@ -46,11 +46,6 @@ Copy the actual connection string from Azure Portal for your Azure Service Bus i
   * Handler can capture headers such as correlationid and domainundertest for saving to the event stream
   * Use new https://devblogs.microsoft.com/aspnet/dotnet-core-workers-in-azure-container-instances/?utm_source=vs_developer_news&utm_medium=referral BackgroundService pattern?
   * Publisher can re-append headers such as correlationid and domainundertest when publishing from the dispatcher
-
-* Finish WIP - multiple handlers for the same event with a message header (subscriber re-publishes with attached SpecificEndpoint so only self picks up the new message, but also SpecificHandler - once for each handler class)
-  * If multiple handlers exist then subscriber republishes the messages with a new header
-  * If receiving a message with that header, dispatch to that exact handler.
-  * Check headers still flow 
 
 ### Cautious go-live (v0.5)
 
@@ -117,9 +112,8 @@ Copy the actual connection string from Azure Portal for your Azure Service Bus i
 #### Example solutions
 
 * Simple publisher and subscriber
-* Complex publisher and subscriber
-* Web API and publisher
-* Web API and background task subscriber?
+* Publisher and subscriber with tests (unit, service)
+* Web API and subscriber (with unit, service tests)
 
 #### ASP.NET Core Extensions
 

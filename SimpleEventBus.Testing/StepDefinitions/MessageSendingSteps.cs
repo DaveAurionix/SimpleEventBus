@@ -1,4 +1,4 @@
-﻿using GherkinSpec.TestModel;
+using GherkinSpec.TestModel;
 using SimpleEventBus.Abstractions;
 using SimpleEventBus.Abstractions.Outgoing;
 using System.Threading.Tasks;
@@ -57,6 +57,22 @@ namespace SimpleEventBus.Testing.StepDefinitions
                     new TestEvent
                     {
                         Property = testData.TestEventContent
+                    })
+                .ConfigureAwait(false);
+        }
+
+        [When("an event suitable for testing multiple handlers is published")]
+        public async Task WhenAnEventForMultipleHandlersIsPublished()
+        {
+            await messagePublisher
+                .PublishEvent(
+                    new TestEventReceivedMultipleTimes
+                    {
+                        Property = testData.TestEventContent
+                    },
+                    new HeaderCollection
+                    {
+                        { "Correlation-ID", testData.CorrelationId }
                     })
                 .ConfigureAwait(false);
         }

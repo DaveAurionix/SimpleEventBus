@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using SimpleEventBus.Testing;
 using SimpleEventBus.Testing.StepDefinitions;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SimpleEventBus.AzureServiceBusTransport.IntegrationTests.Configuration

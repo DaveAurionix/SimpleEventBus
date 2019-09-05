@@ -46,7 +46,7 @@ namespace SimpleEventBus
 
         public async Task StartListening(CancellationToken initialisationCancellationToken = default)
         {
-            await Initialise(initialisationCancellationToken)
+            await InitialiseIncomingPipeline(initialisationCancellationToken)
                 .ConfigureAwait(false);
 
             listeningTask = Task.Run(() => Listen(cancellationTokenSource.Token));
@@ -89,7 +89,7 @@ namespace SimpleEventBus
 
         public async Task StartWaitThenShutDown(CancellationToken stopListeningToken)
         {
-            await Initialise(stopListeningToken)
+            await InitialiseIncomingPipeline(stopListeningToken)
                 .ConfigureAwait(false);
 
             await Listen(stopListeningToken)
@@ -99,7 +99,7 @@ namespace SimpleEventBus
                 .ConfigureAwait(false);
         }
 
-        private async Task Initialise(CancellationToken cancellationToken)
+        private async Task InitialiseIncomingPipeline(CancellationToken cancellationToken)
         {
             if (isInitialised)
             {

@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleEventBus.Abstractions;
 using SimpleEventBus.Abstractions.Incoming;
 using SimpleEventBus.Abstractions.Outgoing;
@@ -38,6 +38,13 @@ namespace SimpleEventBus.Incoming
                 AddMessageTypesHandledBy(
                     serviceDescriptor.ServiceType,
                     handledMessageTypeNames);
+            }
+
+            // TODO unit test case
+            if (!handledMessageTypeNames.Any())
+            {
+                throw new InvalidOperationException(
+                    "Cannot initialise the incoming message pipeline because no message handlers were configured - there is nothing to listen for.");
             }
 
             await messageSource

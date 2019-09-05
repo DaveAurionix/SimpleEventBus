@@ -1,4 +1,4 @@
-﻿using SimpleEventBus.Abstractions;
+using SimpleEventBus.Abstractions;
 using SimpleEventBus.Abstractions.Outgoing;
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace SimpleEventBus.Outgoing
 {
+    // TODO Naming review - is this class an event publisher, a command sender or something else?
     sealed class MessagePublisher : IMessagePublisher
     {
         private readonly IOutgoingPipeline outgoingPipeline;
