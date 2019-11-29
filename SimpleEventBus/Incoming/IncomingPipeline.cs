@@ -85,43 +85,42 @@ namespace SimpleEventBus.Incoming
                 return;
             }
 
-            using (var serviceScope = serviceScopeFactory.CreateScope())
+            using var serviceScope = serviceScopeFactory.CreateScope();
+
+            var context = new Context(
+                serviceScope,
+                cancellationToken);
+            try
             {
-                var context = new Context(
-                    serviceScope,
-                    cancellationToken);
-                try
+                await pipelineStartingAction(message, context)
+                    .ConfigureAwait(false);
+
+                await messageSource
+                    .Complete(message)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                // Behaviours should have logged/recorded/responded to this exception.
+                if (message.DequeuedCount < retryOptions.MaximumImmediateAttempts)
                 {
-                    await pipelineStartingAction(message, context)
-                        .ConfigureAwait(false);
-
                     await messageSource
-                        .Complete(message)
+                        .Abandon(message)
                         .ConfigureAwait(false);
+                    return;
                 }
-                catch (Exception exception)
+
+                if (message.DequeuedCount - retryOptions.MaximumImmediateAttempts < retryOptions.MaximumDeferredAttempts)
                 {
-                    // Behaviours should have logged/recorded/responded to this exception.
-                    if (message.DequeuedCount < retryOptions.MaximumImmediateAttempts)
-                    {
-                        await messageSource
-                            .Abandon(message)
-                            .ConfigureAwait(false);
-                        return;
-                    }
-
-                    if (message.DequeuedCount - retryOptions.MaximumImmediateAttempts < retryOptions.MaximumDeferredAttempts)
-                    {
-                        await messageSource
-                            .DeferUntil(message, DateTime.UtcNow + retryOptions.EffectiveDeferredRetryInterval, "Exception handling message", exception.ToString())
-                            .ConfigureAwait(false);
-                        return;
-                    }
-
                     await messageSource
-                        .DeadLetter(message, "Exception handling message", exception.ToString())
+                        .DeferUntil(message, DateTime.UtcNow + retryOptions.EffectiveDeferredRetryInterval, "Exception handling message", exception.ToString())
                         .ConfigureAwait(false);
+                    return;
                 }
+
+                await messageSource
+                    .DeadLetter(message, "Exception handling message", exception.ToString())
+                    .ConfigureAwait(false);
             }
         }
     }

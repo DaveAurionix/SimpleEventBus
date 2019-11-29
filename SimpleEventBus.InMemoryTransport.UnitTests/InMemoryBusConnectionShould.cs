@@ -27,260 +27,239 @@ namespace SimpleEventBus.InMemoryTransport.UnitTests
         [TestMethod]
         public async Task ReceiveMessagesFromOwnConnectionWhenSubscribed()
         {
-            using (var connection = new InMemoryBusConnection(bus))
-            {
-                await connection
-                    .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
-                    .ConfigureAwait(false);
+            using var connection = new InMemoryBusConnection(bus);
+            await connection
+                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
+                .ConfigureAwait(false);
 
-                await connection
-                    .Sink(new[] { message })
-                    .ConfigureAwait(false);
+            await connection
+                .Sink(new[] { message })
+                .ConfigureAwait(false);
 
-                var messages = await connection
-                    .WaitForNextMessageBatch(1, CancellationToken.None)
-                    .ConfigureAwait(false);
+            var messages = await connection
+                .WaitForNextMessageBatch(1, CancellationToken.None)
+                .ConfigureAwait(false);
 
-                Assert.AreEqual(1, messages.Count());
-                Assert.AreEqual(message.Id, messages.First().Id);
-            }
+            Assert.AreEqual(1, messages.Count());
+            Assert.AreEqual(message.Id, messages.First().Id);
         }
 
         [TestMethod]
         public async Task NotReceiveMessagesFromOwnConnectionWhenNotSubscribed()
         {
-            using (var connection = new InMemoryBusConnection(bus))
-            {
-                await connection
-                    .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { "Another.Type" }), CancellationToken.None)
-                    .ConfigureAwait(false);
+            using var connection = new InMemoryBusConnection(bus);
+            await connection
+                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { "Another.Type" }), CancellationToken.None)
+                .ConfigureAwait(false);
 
-                await connection
-                    .Sink(new[] { message })
-                    .ConfigureAwait(false);
+            await connection
+                .Sink(new[] { message })
+                .ConfigureAwait(false);
 
-                using (var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
-                {
-                    var messages = await connection
-                        .WaitForNextMessageBatch(1, cancellationTokenSource.Token)
-                        .ConfigureAwait(false);
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            var messages = await connection
+                .WaitForNextMessageBatch(1, cancellationTokenSource.Token)
+                .ConfigureAwait(false);
 
-                    Assert.AreEqual(0, messages.Count());
-                }
-            }
+            Assert.AreEqual(0, messages.Count());
         }
 
         [TestMethod]
         public async Task ReceiveMessagesFromOtherConnectionsWhenSubscribed()
         {
-            using (var ownConnection = new InMemoryBusConnection(bus))
-            {
-                using (var otherConnection = new InMemoryBusConnection(bus))
-                {
-                    await ownConnection
-                        .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
-                        .ConfigureAwait(false);
+            using var ownConnection = new InMemoryBusConnection(bus);
+            using var otherConnection = new InMemoryBusConnection(bus);
 
-                    await otherConnection
-                        .Sink(new[] { message })
-                        .ConfigureAwait(false);
+            await ownConnection
+                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
+                .ConfigureAwait(false);
 
-                    var messages = await ownConnection
-                        .WaitForNextMessageBatch(1, CancellationToken.None)
-                        .ConfigureAwait(false);
+            await otherConnection
+                .Sink(new[] { message })
+                .ConfigureAwait(false);
 
-                    Assert.AreEqual(1, messages.Count());
-                    Assert.AreEqual(message.Id, messages.First().Id);
-                }
-            }
+            var messages = await ownConnection
+                .WaitForNextMessageBatch(1, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(1, messages.Count());
+            Assert.AreEqual(message.Id, messages.First().Id);
         }
 
         [TestMethod]
         public async Task NotReceiveMessagesFromOtherConnectionsWhenNotSubscribed()
         {
-            using (var ownConnection = new InMemoryBusConnection(bus))
-            {
-                using (var otherConnection = new InMemoryBusConnection(bus))
-                {
-                    await ownConnection
-                        .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { "Another.Type" }), CancellationToken.None)
-                        .ConfigureAwait(false);
+            using var ownConnection = new InMemoryBusConnection(bus);
+            using var otherConnection = new InMemoryBusConnection(bus);
 
-                    await otherConnection
-                        .Sink(new[] { message })
-                        .ConfigureAwait(false);
+            await ownConnection
+                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { "Another.Type" }), CancellationToken.None)
+                .ConfigureAwait(false);
 
-                    using (var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
-                    {
-                        var messages = await ownConnection
-                            .WaitForNextMessageBatch(1, cancellationTokenSource.Token)
-                            .ConfigureAwait(false);
+            await otherConnection
+                .Sink(new[] { message })
+                .ConfigureAwait(false);
 
-                        Assert.AreEqual(0, messages.Count());
-                    }
-                }
-            }
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            var messages = await ownConnection
+                .WaitForNextMessageBatch(1, cancellationTokenSource.Token)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(0, messages.Count());
         }
 
         [TestMethod]
         public async Task NotReceiveMessagesFromOtherConnectionsWhenSubscribedButTargetEndpointNameIsNotMe()
         {
-            using (var ownConnection = new InMemoryBusConnection(bus))
-            {
-                using (var otherConnection = new InMemoryBusConnection(bus))
-                {
-                    await ownConnection
-                        .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
-                        .ConfigureAwait(false);
+            using var ownConnection = new InMemoryBusConnection(bus);
+            using var otherConnection = new InMemoryBusConnection(bus);
 
-                    await otherConnection
-                        .Sink(
-                            new[] {
+            await ownConnection
+                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
+                .ConfigureAwait(false);
+
+            await otherConnection
+                .Sink(
+                    new[] {
                                 new OutgoingMessage(
                                     id: Guid.NewGuid().ToString(),
                                     body: "hello",
                                     messageTypeNames: new[] { MessageType },
                                     specificReceivingEndpointName: "not me")
-                            })
-                        .ConfigureAwait(false);
+                    })
+                .ConfigureAwait(false);
 
-                    using (var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
-                    {
-                        var messages = await ownConnection
-                            .WaitForNextMessageBatch(1, cancellationTokenSource.Token)
-                            .ConfigureAwait(false);
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 
-                        Assert.AreEqual(0, messages.Count());
-                    }
-                }
-            }
+            var messages = await ownConnection
+                .WaitForNextMessageBatch(1, cancellationTokenSource.Token)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(0, messages.Count());
         }
 
         [TestMethod]
         public async Task ReceiveMessagesFromOtherConnectionsWhenNotSubscribedButTargetEndpointNameIsMe()
         {
-            using (var ownConnection = new InMemoryBusConnection(bus))
-            {
-                using (var otherConnection = new InMemoryBusConnection(bus))
-                {
-                    await ownConnection
-                        .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { "Another.Type" }), CancellationToken.None)
-                        .ConfigureAwait(false);
+            using var ownConnection = new InMemoryBusConnection(bus);
+            using var otherConnection = new InMemoryBusConnection(bus);
 
-                    var message = new OutgoingMessage(
-                        id: Guid.NewGuid().ToString(),
-                        body: "hello",
-                        messageTypeNames: new[] { MessageType },
-                        specificReceivingEndpointName: "TestEndpoint");
+            await ownConnection
+                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { "Another.Type" }), CancellationToken.None)
+                .ConfigureAwait(false);
 
-                    await otherConnection
-                        .Sink(new[] { message })
-                        .ConfigureAwait(false);
+            var message = new OutgoingMessage(
+                id: Guid.NewGuid().ToString(),
+                body: "hello",
+                messageTypeNames: new[] { MessageType },
+                specificReceivingEndpointName: "TestEndpoint");
 
-                    var messages = await ownConnection
-                        .WaitForNextMessageBatch(1, CancellationToken.None)
-                        .ConfigureAwait(false);
+            await otherConnection
+                .Sink(new[] { message })
+                .ConfigureAwait(false);
 
-                    Assert.AreEqual(1, messages.Count());
-                    Assert.AreEqual(message.Id, messages.First().Id);
-                }
-            }
+            var messages = await ownConnection
+                .WaitForNextMessageBatch(1, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(1, messages.Count());
+            Assert.AreEqual(message.Id, messages.First().Id);
         }
 
         [TestMethod]
         public async Task HideMessagesThatHaveBeenDequeued()
         {
-            using (var connection = new InMemoryBusConnection(bus))
+            using var connection = new InMemoryBusConnection(bus)
             {
-                connection.LockTime = TimeSpan.FromSeconds(1);
+                LockTime = TimeSpan.FromSeconds(1)
+            };
 
-                await connection
-                    .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
-                    .ConfigureAwait(false);
+            await connection
+                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
+                .ConfigureAwait(false);
 
-                await connection
-                    .Sink(new[] { message, message2 })
-                    .ConfigureAwait(false);
+            await connection
+                .Sink(new[] { message, message2 })
+                .ConfigureAwait(false);
 
-                var messages = await connection
-                    .WaitForNextMessageBatch(1, CancellationToken.None)
-                    .ConfigureAwait(false);
+            var messages = await connection
+                .WaitForNextMessageBatch(1, CancellationToken.None)
+                .ConfigureAwait(false);
 
-                Assert.AreEqual(message.Id, messages.Single().Id);
+            Assert.AreEqual(message.Id, messages.Single().Id);
 
-                messages = await connection
-                    .WaitForNextMessageBatch(2, CancellationToken.None)
-                    .ConfigureAwait(false);
+            messages = await connection
+                .WaitForNextMessageBatch(2, CancellationToken.None)
+                .ConfigureAwait(false);
 
-                Assert.AreEqual(message2.Id, messages.Single().Id);
-            }
+            Assert.AreEqual(message2.Id, messages.Single().Id);
         }
 
         [TestMethod]
         public async Task ReshowMessagesAfterLockTimeHasExpiredThatAreNotCompleted()
         {
-            using (var connection = new InMemoryBusConnection(bus))
+            using var connection = new InMemoryBusConnection(bus)
             {
-                connection.LockTime = TimeSpan.FromSeconds(1);
+                LockTime = TimeSpan.FromSeconds(1)
+            };
 
-                await connection
-                    .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
-                    .ConfigureAwait(false);
+            await connection
+                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
+                .ConfigureAwait(false);
 
-                await connection
-                    .Sink(new[] { message, message2 })
-                    .ConfigureAwait(false);
+            await connection
+                .Sink(new[] { message, message2 })
+                .ConfigureAwait(false);
 
-                var messages = await connection
-                    .WaitForNextMessageBatch(1, CancellationToken.None)
-                    .ConfigureAwait(false);
+            var messages = await connection
+                .WaitForNextMessageBatch(1, CancellationToken.None)
+                .ConfigureAwait(false);
 
-                Assert.AreEqual(message.Id, messages.Single().Id);
+            Assert.AreEqual(message.Id, messages.Single().Id);
 
-                await Task
-                    .Delay(TimeSpan.FromSeconds(2))
-                    .ConfigureAwait(false);
+            await Task
+                .Delay(TimeSpan.FromSeconds(2))
+                .ConfigureAwait(false);
 
-                messages = await connection
-                    .WaitForNextMessageBatch(2, CancellationToken.None)
-                    .ConfigureAwait(false);
+            messages = await connection
+                .WaitForNextMessageBatch(2, CancellationToken.None)
+                .ConfigureAwait(false);
 
-                Assert.AreEqual(message.Id, messages.Last().Id);
-            }
+            Assert.AreEqual(message.Id, messages.Last().Id);
         }
 
         [TestMethod]
         public async Task ReshowAbandonedMessagesImmediately()
         {
-            using (var connection = new InMemoryBusConnection(bus))
+            using var connection = new InMemoryBusConnection(bus)
             {
-                connection.LockTime = TimeSpan.FromSeconds(10);
+                LockTime = TimeSpan.FromSeconds(10)
+            };
 
-                await connection
-                    .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
-                    .ConfigureAwait(false);
+            await connection
+                .EnsureSubscribed(new SubscriptionDescription("TestEndpoint", new[] { MessageType }), CancellationToken.None)
+                .ConfigureAwait(false);
 
-                await connection
-                    .Sink(new[] { message, message2 })
-                    .ConfigureAwait(false);
+            await connection
+                .Sink(new[] { message, message2 })
+                .ConfigureAwait(false);
 
-                var messages = await connection
-                    .WaitForNextMessageBatch(1, CancellationToken.None)
-                    .ConfigureAwait(false);
+            var messages = await connection
+                .WaitForNextMessageBatch(1, CancellationToken.None)
+                .ConfigureAwait(false);
 
-                var incomingMessage = messages.Single();
-                Assert.AreEqual(message.Id, incomingMessage.Id);
+            var incomingMessage = messages.Single();
+            Assert.AreEqual(message.Id, incomingMessage.Id);
 
-                await connection
-                    .Abandon(incomingMessage)
-                    .ConfigureAwait(false);
+            await connection
+                .Abandon(incomingMessage)
+                .ConfigureAwait(false);
 
-                messages = await connection
-                    .WaitForNextMessageBatch(2, CancellationToken.None)
-                    .ConfigureAwait(false);
+            messages = await connection
+                .WaitForNextMessageBatch(2, CancellationToken.None)
+                .ConfigureAwait(false);
 
-                Assert.AreEqual(message.Id, messages.Last().Id);
-            }
+            Assert.AreEqual(message.Id, messages.Last().Id);
         }
     }
 }

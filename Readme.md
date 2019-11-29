@@ -51,6 +51,8 @@ Copy the actual connection string from Azure Portal for your Azure Service Bus i
 ### MVP (v0.1)
 
 * Update to latest packages and .NET Core 3.0
+
+* Fix time-dependent (therefore: flaky) unit tests in AzureServiceBusTransport.UnitTests
 * Search code for TODO comments
   * Unit tests for dequeue count in file and in-memory buses
 * Monitoring (separate extensions repo for AppInsights)

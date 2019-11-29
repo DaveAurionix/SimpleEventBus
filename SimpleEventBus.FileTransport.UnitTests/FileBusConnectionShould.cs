@@ -71,14 +71,13 @@ namespace SimpleEventBus.FileTransport.UnitTests
                 .Sink(new[] { message })
                 .ConfigureAwait(false);
 
-            using (var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
-            {
-                var messages = await bus
-                    .WaitForNextMessageBatch(1, cancellationTokenSource.Token)
-                    .ConfigureAwait(false);
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 
-                Assert.AreEqual(0, messages.Count());
-            }
+            var messages = await bus
+                .WaitForNextMessageBatch(1, cancellationTokenSource.Token)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(0, messages.Count());
         }
 
         [TestMethod]
@@ -99,14 +98,12 @@ namespace SimpleEventBus.FileTransport.UnitTests
                     })
                 .ConfigureAwait(false);
 
-            using (var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
-            {
-                var messages = await bus
-                    .WaitForNextMessageBatch(1, cancellationTokenSource.Token)
-                    .ConfigureAwait(false);
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            var messages = await bus
+                .WaitForNextMessageBatch(1, cancellationTokenSource.Token)
+                .ConfigureAwait(false);
 
-                Assert.AreEqual(0, messages.Count());
-            }
+            Assert.AreEqual(0, messages.Count());
         }
 
         [TestMethod]

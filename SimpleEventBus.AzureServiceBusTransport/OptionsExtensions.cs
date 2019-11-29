@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.ServiceBus;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -85,7 +85,7 @@ namespace SimpleEventBus
             return options;
         }
 
-        public static Options UseFailoverStrategy<TFailoverStrategy>(this Options options)
+        public static Options Use<TFailoverStrategy>(this Options options)
             where TFailoverStrategy : class, IFailoverStrategy
         {
             options.Services.AddSingleton<IFailoverStrategy>(
@@ -95,18 +95,14 @@ namespace SimpleEventBus
 
         public static Options Use(this Options options, FailoverStrategy strategy)
         {
-            switch (strategy)
+            return strategy switch
             {
-                case FailoverStrategy.ActiveActive:
-                    return options.UseFailoverStrategy<ActiveActiveFailoverStrategy>();
-                case FailoverStrategy.ActivePassive:
-                    return options.UseFailoverStrategy<ActivePassiveFailoverStrategy>();
-                case FailoverStrategy.None:
-                    return options.UseFailoverStrategy<NoFailoverStrategy>();
-                default:
-                    throw new NotSupportedException(
-                        $"Failover strategy {strategy} unknown.");
-            }
+                FailoverStrategy.ActiveActive => options.Use<ActiveActiveFailoverStrategy>(),
+                FailoverStrategy.ActivePassive => options.Use<ActivePassiveFailoverStrategy>(),
+                FailoverStrategy.None => options.Use<NoFailoverStrategy>(),
+                _ => throw new NotSupportedException(
+                        $"Failover strategy {strategy} unknown."),
+            };
         }
 
         private static ILogger<T> GetLoggerOrDefault<T>(this IServiceProvider serviceProvider)
