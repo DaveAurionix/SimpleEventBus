@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using System.Threading;
 
 namespace SimpleEventBus.Abstractions.Incoming
@@ -12,6 +12,7 @@ namespace SimpleEventBus.Abstractions.Incoming
         }
 
         public IServiceScope ServiceScope { get; }
+
         public CancellationToken CancellationToken { get; }
     }
 }

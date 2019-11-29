@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleEventBus.Abstractions.Incoming;
 using System;
@@ -60,7 +60,7 @@ namespace SimpleEventBus.Incoming
 
             foreach (var behaviour in behaviours)
             {
-                logger.LogInformation($"Adding {behaviour.GetType().Name} to incoming pipeline.");
+                logger.LogDebug($"Adding {behaviour.GetType().Name} to incoming pipeline.");
             }
 
             return nextAction;

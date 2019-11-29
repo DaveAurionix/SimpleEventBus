@@ -6,17 +6,34 @@ Warning!  This is not yet considered to be production-ready.  API surface is evo
 
 ## Overview
 
-TODO
+A .NET Standard library that glues message-handler classes up to an Azure Service Bus instance. It's designed to minimise the amount of code required in applications in order to subscribe to and handle a message.
+
+### Feature highlights
+
+* Open source
+* Publish and subscribe to events (and send commands)
+* Support failover with cheap waiting (long request delays yet fail-fast on faulty connection)
+* Immediate and deferred retries
+* Multiple handlers for the same event
+* In-memory and file-based transports for in-process and cross-process tests
+* Azure Service Bus transport with enhanced resilience
+* Dynamic batch size (adjusts automatically to auto-tune for optimum performance for a given desired number of concurrent messages)
+* Flow correlation id automatically across HTTP calls and exchanged messages
+* Command routing configured away from application code
+
+These are the baseline features. More are available in [the Extensions package](https://github.com/GivePenny/SimpleEventBus.Extensions).
 
 ## Getting started
 
-TODO - Reference example repositories
+To get started using SimpleEventBus in your own development projects as an event-publisher or subscriber, see the [minimal example](https://github.com/GivePenny/SimpleEventBus.MinimalExample).
 
-## Development and testing
+To get started developing and testing this repository, see the next section.
+
+### Development and testing
 
 This project uses a Visual Studio 2019 solution.  After checking the project out and opening the solution, no special steps are needed to build it or to run the unit test projects.
 
-Integration test projects usually run with no extra configuration.  The only exception is the AzureServiceBusTransport.IntegrationTests project.  This currently needs a new appsettings.Development.json file created alongside appsettings.json with a connection string in pointing to an Azure Service Bus instance that you have created for development and testing purposes.  Example file contents (the MachineName allows multiple developers to share a Bus but on isolated Topics):
+Integration test projects usually run with no extra configuration.  The one exception is the AzureServiceBusTransport.IntegrationTests project.  This currently needs a new appsettings.Development.json file created alongside appsettings.json with a connection string in it that points to an Azure Service Bus instance that you have created for development and testing purposes.  Example file contents (the MachineName allows multiple developers to share a Bus but on isolated Topics):
 
 ```json
 "AzureServiceBusTransport": {
@@ -33,14 +50,15 @@ Copy the actual connection string from Azure Portal for your Azure Service Bus i
 
 ### MVP (v0.1)
 
+* Update to latest packages and .NET Core 3.0
 * Search code for TODO comments
   * Unit tests for dequeue count in file and in-memory buses
-* Logging (separate extensions repo or core functionality to support testing diagnosis?)
 * Monitoring (separate extensions repo for AppInsights)
 * Circuit breaker (separate extensions repo?) - investigate Polly, e.g. https://docs.microsoft.com/en-us/dotnet/standard/microservices-architecture/implement-resilient-applications/implement-circuit-breaker-pattern
 * Performance tests
 * Time-delayed (secheduled events and commands)
 * Pushing a batch of messages that is too big for ASB, or rely on ASB's internal batching
+* PAT compatibility shim (separate repo)
 
 * Experimental hookup with EventSourcing package
   * Handler can capture headers such as correlationid and domainundertest for saving to the event stream
@@ -58,7 +76,6 @@ Copy the actual connection string from Azure Portal for your Azure Service Bus i
 * Polymorphic subscription (v1 - non-abstract base classes)
 * Support custom message headers/metadata
 * Case insensitive message headers due to PHP ASB libraries
-* Support multiple transports - configure per-event / per-command transports (bridge example?)
 * When abandoning ASB message, set the reason or exception in "properties to modify" parameter?
 
 ### vNext
@@ -67,25 +84,14 @@ Copy the actual connection string from Azure Portal for your Azure Service Bus i
   * Options has UseRateLimit(maximumMessages:500, enforcedInPeriod:TimeSpan.FromSeconds(1))
   * Behaviour enforces rate limit
 * Priority queues concept (may just be documenting a good pattern)
+* Support multiple transports - configure per-event / per-command transports (bridge example?)
 
 ### Doc comments
 
 #### Feature highlights (future intent)
 
-* Open source
-* Publish and subscribe to events (and send commands)
-* Support failover with cheap waiting (long request delays yet fail-fast on faulty connection)
 * Polymorphic subscription
-* Immediate and deferred retries
-* Multiple handlers for the same event
 * (service test subscription rule version not fixed at v1_15_0_0)
-* In-memory and file-based transports for in-process and cross-process tests
-* Azure Service Bus transport with enhanced resilience
-* Dynamic batch size (adjusts automatically to auto-tune for optimum performance)
-* Concurrent processing limit independent of message retrieval (positive and negative feedback to tune the batch size to minimise cost and network usage whilst maintaining desired limit on number of messages processed in parallel)
-* DomainUnderTest - for automated testing using production code footprint
-* Flow correlation id automatically across HTTP calls and exchanged messages
-* Command routing configured away from application code
 
 #### Handlers
 

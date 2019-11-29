@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SimpleEventBus.Abstractions;
 using SimpleEventBus.Abstractions.Incoming;
 using SimpleEventBus.Abstractions.Outgoing;
@@ -108,6 +109,13 @@ namespace SimpleEventBus
                 options.UseConcurrencyLimit();
             }
 
+            // Add this inside the correlationid handler but outside anything else
+            // TODO Priority value/enum?
+            if (!options.IsConfigured<LoggingIncomingBehaviour>())
+            {
+                options.UseLogging(LogLevel.Debug);
+            }
+
             // Add this last to ensure that logging correlation id is added at the very start of the chain
             // TODO Better to use a priority enum?
             options.UseCorrelationId();
@@ -136,6 +144,22 @@ namespace SimpleEventBus
 
             options.Services.AddSingleton<IOutgoingHeaderProvider>(
                 sp => sp.GetRequiredService<CorrelationIdIncomingBehaviour>());
+
+            return options;
+        }
+
+        private static Options UseLogging(this Options options, LogLevel logLevel)
+            => UseLogging(options, logLevel, logLevel);
+
+        private static Options UseLogging(this Options options, LogLevel incomingMessageLogLevel, LogLevel outgoingMessageLogLevel)
+        {
+            options.Services.AddSingleton(
+                sp => new LoggingIncomingBehaviour(
+                    sp.GetLoggerOrDefault<LoggingIncomingBehaviour>(), incomingMessageLogLevel));
+
+            options.Services.AddSingleton(
+                sp => new LoggingOutgoingBehaviour(
+                    sp.GetLoggerOrDefault<LoggingOutgoingBehaviour>(), outgoingMessageLogLevel));
 
             return options;
         }

@@ -80,7 +80,6 @@ namespace SimpleEventBus.Incoming
             }
 
             // TODO Unit tests
-            // TODO Integration tests for the scenario of multiple handlers for same message type
             if (handlerBindings[messageTypeName].Count == 1)
             {
                 await handlerBindings[messageTypeName][0]

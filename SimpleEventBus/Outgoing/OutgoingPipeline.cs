@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -36,7 +36,7 @@ namespace SimpleEventBus.Outgoing
 
             foreach (var behaviour in behaviours)
             {
-                logger.LogInformation($"Adding {behaviour.GetType().Name} to outgoing pipeline.");
+                logger.LogDebug($"Adding {behaviour.GetType().Name} to outgoing pipeline.");
             }
 
             return nextAction;
