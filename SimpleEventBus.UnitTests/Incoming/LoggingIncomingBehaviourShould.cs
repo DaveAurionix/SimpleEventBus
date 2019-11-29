@@ -28,13 +28,7 @@ namespace SimpleEventBus.UnitTests.Incoming
 
             await behaviour.Process(message, new Context(null), NextAction).ConfigureAwait(false);
 
-            mockLogger
-                .Verify(
-                    m => m.Log<object>(
-                        level,
-                        It.IsAny<EventId>(), It.IsAny<object>(), It.IsAny<Exception>(),
-                        It.IsAny<Func<object, Exception, string>>()),
-                    Times.Once);
+            mockLogger.VerifyLoggedMessageContains(level, "HANDLING ");
         }
 
         [DataTestMethod]

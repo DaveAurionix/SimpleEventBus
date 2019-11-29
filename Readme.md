@@ -50,7 +50,8 @@ Copy the actual connection string from Azure Portal for your Azure Service Bus i
 
 ### MVP (v0.1)
 
-* Update to latest packages and .NET Core 3.0
+* Remove dependency on Newtonsoft.JSON
+* Update examples repo (and to .NET Core 3.0 hostbuilder pattern)
 
 * Fix time-dependent (therefore: flaky) unit tests in AzureServiceBusTransport.UnitTests
 * Search code for TODO comments

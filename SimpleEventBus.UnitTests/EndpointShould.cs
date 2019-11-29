@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SimpleEventBus.Abstractions.Incoming;
@@ -42,8 +42,8 @@ namespace SimpleEventBus.UnitTests
                 .StartListening()
                 .ConfigureAwait(false);
 
-            mockLogger.VerifyLogInformation("Messaging endpoint is initialising.");
-            mockLogger.VerifyLogInformation("Messaging endpoint is listening for messages.");
+            mockLogger.VerifyLogged(LogLevel.Information, "Messaging endpoint is initialising.");
+            mockLogger.VerifyLogged(LogLevel.Information, "Messaging endpoint is listening for messages.");
         }
 
         [TestMethod]
@@ -61,7 +61,7 @@ namespace SimpleEventBus.UnitTests
                 .ShutDown()
                 .ConfigureAwait(false);
 
-            mockLogger.VerifyLogInformation("Messaging endpoint has stopped listening for messages.");
+            mockLogger.VerifyLogged(LogLevel.Information, "Messaging endpoint has stopped listening for messages.");
         }
 
         [TestMethod]

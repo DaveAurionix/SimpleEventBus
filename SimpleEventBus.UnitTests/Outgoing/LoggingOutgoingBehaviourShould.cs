@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using SimpleEventBus.Abstractions;
 using SimpleEventBus.Abstractions.Outgoing;
 using SimpleEventBus.Outgoing;
 using System;
@@ -52,13 +51,7 @@ namespace SimpleEventBus.UnitTests.Outgoing
                     NextAction)
                 .ConfigureAwait(false);
 
-            mockLogger
-                .Verify(
-                    m => m.Log<object>(
-                        LogLevel.Information,
-                        It.IsAny<EventId>(), It.IsAny<object>(), It.IsAny<Exception>(),
-                        It.IsAny<Func<object, Exception, string>>()),
-                    Times.Once);
+            mockLogger.VerifyLoggedMessageContains(LogLevel.Information, "SENDING test");
         }
 
         private Task NextAction(IEnumerable<OutgoingMessage> messages)
